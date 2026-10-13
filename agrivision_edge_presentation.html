@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriVision-Edge Presentation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            950: '#021811',
+                            900: '#062c1e',
+                            800: '#0b4731',
+                            700: '#106848',
+                            400: '#34d399',
+                            300: '#6ee7b7'
+                        },
+                        lime: {
+                            400: '#a3e635',
+                            300: '#bef264',
+                            500: '#84cc16'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { opacity: 0.4, transform: 'scale(1)' },
+                            '50%': { opacity: 0.8, transform: 'scale(1.05)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #021811;
+            color: #ecfdf5;
+            overflow: hidden;
+        }
+
+        /* Real Lush Leaf Background Styling matching user provided image */
+        .leaf-bg-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background-image: linear-gradient(to bottom, rgba(2, 24, 17, 0.82), rgba(2, 24, 17, 0.88)), url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 0;
+        }
+
+        /* Glassmorphic card styling */
+        .glass-panel {
+            background: rgba(4, 32, 22, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(163, 230, 53, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-card {
+            background: rgba(8, 48, 33, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(52, 211, 153, 0.18);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(163, 230, 53, 0.45);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(163, 230, 53, 0.15);
+        }
+
+        .neon-glow {
+            text-shadow: 0 0 15px rgba(163, 230, 53, 0.5);
+        }
+
+        /* Slide Transition Effects */
+        .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: scale(0.98) translateY(8px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem;
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1) translateY(0);
+            z-index: 10;
+        }
+
+        /* Reveal delay helpers */
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .slide.active .reveal-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.4s; }
+        .delay-5 { transition-delay: 0.5s; }
+
+        /* Mobile Phone Mockup */
+        .phone-mockup {
+            width: 260px;
+            height: 520px;
+            border-radius: 36px;
+            border: 7px solid #1a2e26;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(163, 230, 53, 0.2);
+            background: #000;
+            overflow: hidden;
+            position: relative;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between select-none relative overflow-hidden">
+
+    <!-- Leaf Photo Background matching design -->
+    <div class="leaf-bg-overlay"></div>
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-emerald-600/20 rounded-full blur-3xl pointer-events-none animate-pulse-glow z-0"></div>
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-lime-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-glow z-0" style="animation-delay: 1.5s;"></div>
+    
+    <!-- TOP HEADER -->
+    <header class="relative z-20 px-6 py-3 flex items-center justify-between border-b border-emerald-900/60 glass-panel min-h-[64px]">
+        <!-- Left Branding -->
+        <div class="flex items-center space-x-3 w-1/4">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-lime-400 to-emerald-600 flex items-center justify-center text-emerald-950 font-bold text-xl shadow-lg shadow-lime-500/20 flex-shrink-0">
+                <i class="fa-solid font-bold fa-leaf"></i>
+            </div>
+            <div class="hidden sm:block">
+                <h1 class="font-bold text-lg tracking-wide text-white flex items-center gap-2 leading-tight">
+                    AgriVision<span class="text-lime-400 font-mono">-Edge</span>
+                </h1>
+                <p class="text-[11px] text-emerald-300/70 leading-none mt-0.5">AI-Powered Crop Disease Detection</p>
+            </div>
+        </div>
+
+        <!-- Middle Quick Jump Button (Centered in Header) -->
+        <div class="flex-1 flex justify-center items-center">
+            <button id="slideMenuBtn" onclick="toggleOverviewModal()" class="px-4 py-2 rounded-xl glass-card hover:bg-emerald-800/50 flex items-center justify-center gap-2.5 text-xs font-mono text-emerald-300 border border-emerald-700/60 hover:border-lime-400/60 transition shadow-md">
+                <i class="fa-solid fa-border-all text-lime-400 text-sm"></i>
+                <span class="font-semibold tracking-wide">Overview (<span id="slideIndexText" class="text-lime-300">01</span> / 15)</span>
+            </button>
+        </div>
+
+        <!-- Right Header Status -->
+        <div class="flex items-center justify-end space-x-3 text-xs font-mono w-1/4">
+            <button onclick="toggleFullscreen()" class="p-2.5 rounded-xl glass-card text-emerald-300 hover:text-lime-400 transition hover:border-lime-400/40" title="Toggle Fullscreen">
+                <i class="fa-solid fa-expand text-sm"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN SLIDES DECK -->
+    <main class="relative flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-4 overflow-hidden flex items-center justify-center z-10">
+
+        <!-- SLIDE 01: TITLE -->
+        <section class="slide active" id="slide-1">
+            <div class="max-w-4xl mx-auto text-center space-y-6">
+                <h1 class="reveal-item delay-2 text-5xl sm:text-7xl font-extrabold tracking-tight text-white leading-tight">
+                    AgriVision<span class="text-transparent bg-clip-text bg-gradient-to-r from-lime-400 to-emerald-400 neon-glow">-Edge</span>
+                </h1>
+                <p class="reveal-item delay-3 text-xl sm:text-2xl font-light text-emerald-200 max-w-2xl mx-auto">
+                    AI-Powered Crop Disease Detection & Management
+                </p>
+                <div class="reveal-item delay-4 p-6 glass-panel rounded-2xl max-w-3xl mx-auto text-emerald-100 text-base sm:text-lg border-l-4 border-l-lime-400">
+                    An offline-first agricultural intelligence application that helps identify crop diseases from leaf images and provides relevant disease management information.
+                </div>
+                <div class="reveal-item delay-5 pt-4">
+                    <span class="inline-block px-6 py-2.5 rounded-full bg-lime-400/10 border border-lime-400/40 text-lime-400 font-semibold tracking-wide text-sm shadow-lg shadow-lime-500/10">
+                        Tagline: Smarter Farming. Earlier Detection. Healthier Crops.
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 02: THE PROBLEM -->
+        <section class="slide" id="slide-2">
+            <div class="grid lg:grid-cols-12 gap-8 items-center max-w-6xl mx-auto w-full">
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="reveal-item delay-1 flex items-center gap-3">
+                        <span class="px-3 py-1 bg-red-500/20 border border-red-500/40 text-red-400 font-mono text-xs rounded-full uppercase tracking-wider">Challenge</span>
+                        <h2 class="text-3xl sm:text-4xl font-bold text-white">The Problem</h2>
+                    </div>
+                    <p class="reveal-item delay-2 text-emerald-200 text-lg">Crop diseases remain a major challenge for farmers worldwide.</p>
+                    
+                    <div class="grid gap-3.5">
+                        <div class="reveal-item delay-3 p-4 glass-card rounded-xl border-l-4 border-l-red-400 flex items-start gap-3">
+                            <i class="fa-solid fa-circle-exclamation text-red-400 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Early Detection Gap</h4>
+                                <p class="text-sm text-emerald-200/80">Disease symptoms can be difficult to identify accurately at an early stage.</p>
+                            </div>
+                        </div>
+
+                        <div class="reveal-item delay-4 p-4 glass-card rounded-xl border-l-4 border-l-orange-400 flex items-start gap-3">
+                            <i class="fa-solid fa-user-slash text-orange-400 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Limited Expert Access</h4>
+                                <p class="text-sm text-emerald-200/80">Limited access to agricultural experts can drastically delay diagnosis.</p>
+                            </div>
+                        </div>
+
+                        <div class="reveal-item delay-5 p-4 glass-card rounded-xl border-l-4 border-l-amber-400 flex items-start gap-3">
+                            <i class="fa-solid fa-wifi text-amber-400 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Connectivity Barriers</h4>
+                                <p class="text-sm text-emerald-200/80">Internet-dependent tools are often inaccessible in low-connectivity rural fields.</p>
+                            </div>
+                        </div>
+
+                        <div class="reveal-item delay-5 p-4 glass-card rounded-xl border-l-4 border-l-red-500 flex items-start gap-3">
+                            <i class="fa-solid fa-wheat-awn-circle-exclamation text-red-500 mt-1"></i>
+                            <div>
+                                <h4 class="font-semibold text-white">Economic Loss</h4>
+                                <p class="text-sm text-emerald-200/80">Delayed or incorrect treatment exponentially increases crop damage and economic loss.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 reveal-item delay-3 flex justify-center">
+                    <div class="glass-panel p-5 rounded-2xl relative group overflow-hidden max-w-sm w-full">
+                        <div class="relative rounded-xl overflow-hidden border border-red-500/30">
+                            <div class="w-full h-64 bg-emerald-950 flex flex-col items-center justify-center relative">
+                                <svg viewBox="0 0 200 200" class="w-48 h-48 drop-shadow-xl">
+                                    <path d="M100 20 C140 50 170 100 150 160 C120 180 80 180 50 160 C30 100 60 50 100 20 Z" fill="#15803d" stroke="#22c55e" stroke-width="2"/>
+                                    <path d="M100 20 Q100 100 100 175" stroke="#166534" stroke-width="3" fill="none"/>
+                                    <circle cx="85" cy="70" r="12" fill="#854d0e" opacity="0.8" stroke="#facc15" stroke-width="1.5"/>
+                                    <circle cx="85" cy="70" r="6" fill="#451a03"/>
+                                    <circle cx="120" cy="110" r="16" fill="#854d0e" opacity="0.85" stroke="#facc15" stroke-width="1.5"/>
+                                    <circle cx="120" cy="110" r="8" fill="#451a03"/>
+                                    <circle cx="75" cy="130" r="10" fill="#78350f" opacity="0.8"/>
+                                </svg>
+                                <div class="absolute top-20 left-20 w-8 h-8 border-2 border-red-400 rounded-full animate-ping"></div>
+                            </div>
+                            <div class="p-3 bg-emerald-900/90 text-xs text-center border-t border-emerald-800">
+                                <span class="text-red-400 font-semibold">Tomato Early Blight Symptoms</span>: Concentric ring necrotic lesions detected
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 03: OUR PROPOSED SOLUTION -->
+        <section class="slide" id="slide-3">
+            <div class="max-w-5xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <span class="reveal-item delay-1 px-3 py-1 bg-lime-400/20 border border-lime-400/40 text-lime-400 font-mono text-xs rounded-full uppercase">Innovation</span>
+                    <h2 class="reveal-item delay-2 text-3xl sm:text-4xl font-bold text-white">Our Proposed Solution</h2>
+                    <p class="reveal-item delay-3 text-lime-300 font-medium">Agricultural intelligence that works without constant internet access.</p>
+                </div>
+
+                <div class="reveal-item delay-4 glass-panel p-6 rounded-2xl border-l-4 border-l-lime-400 text-center max-w-3xl mx-auto">
+                    AgriVision-Edge combines a mobile application, an on-device machine-learning model, and locally stored disease information to support crop disease identification and management.
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+                    <div class="reveal-item delay-1 glass-card p-5 rounded-xl space-y-3 relative overflow-hidden group hover:border-lime-400">
+                        <div class="w-10 h-10 rounded-lg bg-lime-400/20 text-lime-400 flex items-center justify-center font-bold text-lg">1</div>
+                        <h3 class="font-semibold text-white">Capture Image</h3>
+                        <p class="text-xs text-emerald-200/80">Capture or select a crop leaf image directly within the app.</p>
+                    </div>
+
+                    <div class="reveal-item delay-2 glass-card p-5 rounded-xl space-y-3 relative overflow-hidden group hover:border-lime-400">
+                        <div class="w-10 h-10 rounded-lg bg-lime-400/20 text-lime-400 flex items-center justify-center font-bold text-lg">2</div>
+                        <h3 class="font-semibold text-white">Local AI Inference</h3>
+                        <p class="text-xs text-emerald-200/80">Run TensorFlow Lite classification instantly on the smartphone device.</p>
+                    </div>
+
+                    <div class="reveal-item delay-3 glass-card p-5 rounded-xl space-y-3 relative overflow-hidden group hover:border-lime-400">
+                        <div class="w-10 h-10 rounded-lg bg-lime-400/20 text-lime-400 flex items-center justify-center font-bold text-lg">3</div>
+                        <h3 class="font-semibold text-white">Predicted Diagnosis</h3>
+                        <p class="text-xs text-emerald-200/80">Display the model's predicted disease class with confidence indicators.</p>
+                    </div>
+
+                    <div class="reveal-item delay-4 glass-card p-5 rounded-xl space-y-3 relative overflow-hidden group hover:border-lime-400">
+                        <div class="w-10 h-10 rounded-lg bg-lime-400/20 text-lime-400 flex items-center justify-center font-bold text-lg">4</div>
+                        <h3 class="font-semibold text-white">Offline Guidance</h3>
+                        <p class="text-xs text-emerald-200/80">Access symptoms, treatment guidance, and prevention locally.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 04: PROJECT OBJECTIVES -->
+        <section class="slide" id="slide-4">
+            <div class="max-w-5xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <h2 class="reveal-item delay-1 text-3xl sm:text-4xl font-bold text-white">Project Objectives</h2>
+                    <p class="reveal-item delay-2 text-emerald-300">Making crop disease information more accessible to every farmer.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+                    <div class="reveal-item delay-1 glass-card p-5 rounded-xl flex items-start gap-4">
+                        <div class="w-12 h-12 flex-shrink-0 bg-emerald-800/60 rounded-xl text-lime-400 border border-emerald-700 flex items-center justify-center">
+                            <i class="fa-brands fa-android text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-mono text-lime-400">01</span>
+                            <h3 class="font-semibold text-white text-base">Android Application</h3>
+                            <p class="text-xs text-emerald-200/80 mt-1">Develop a lightweight, performant Android-based disease detection app.</p>
+                        </div>
+                    </div>
+
+                    <div class="reveal-item delay-2 glass-card p-5 rounded-xl flex items-start gap-4">
+                        <div class="w-12 h-12 flex-shrink-0 bg-emerald-800/60 rounded-xl text-lime-400 border border-emerald-700 flex items-center justify-center">
+                            <i class="fa-solid fa-microchip text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-mono text-lime-400">02</span>
+                            <h3 class="font-semibold text-white text-base">On-Device AI</h3>
+                            <p class="text-xs text-emerald-200/80 mt-1">Perform image classification directly on device without server dependencies.</p>
+                        </div>
+                    </div>
+
+                    <div class="reveal-item delay-3 glass-card p-5 rounded-xl flex items-start gap-4">
+                        <div class="w-12 h-12 flex-shrink-0 bg-emerald-800/60 rounded-xl text-lime-400 border border-emerald-700 flex items-center justify-center">
+                            <i class="fa-solid fa-plane-slash text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-mono text-lime-400">03</span>
+                            <h3 class="font-semibold text-white text-base">Offline Autonomy</h3>
+                            <p class="text-xs text-emerald-200/80 mt-1">Eliminate reliance on continuous internet connectivity in the field.</p>
+                        </div>
+                    </div>
+
+                    <div class="reveal-item delay-4 glass-card p-5 rounded-xl flex items-start gap-4">
+                        <div class="w-12 h-12 flex-shrink-0 bg-emerald-800/60 rounded-xl text-lime-400 border border-emerald-700 flex items-center justify-center">
+                            <i class="fa-solid fa-book-medical text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-mono text-lime-400">04</span>
+                            <h3 class="font-semibold text-white text-base">Actionable Advice</h3>
+                            <p class="text-xs text-emerald-200/80 mt-1">Provide structured symptoms, treatment, and preventive advice.</p>
+                        </div>
+                    </div>
+
+                    <div class="reveal-item delay-5 glass-card p-5 rounded-xl flex items-start gap-4">
+                        <div class="w-12 h-12 flex-shrink-0 bg-emerald-800/60 rounded-xl text-lime-400 border border-emerald-700 flex items-center justify-center">
+                            <i class="fa-solid fa-hands-holding-circle text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-mono text-lime-400">05</span>
+                            <h3 class="font-semibold text-white text-base">Farmer-Centric UX</h3>
+                            <p class="text-xs text-emerald-200/80 mt-1">Create an intuitive, visual interface requiring minimal digital literacy.</p>
+                        </div>
+                    </div>
+
+                    <div class="reveal-item delay-5 glass-card p-5 rounded-xl flex items-start gap-4">
+                        <div class="w-12 h-12 flex-shrink-0 bg-emerald-800/60 rounded-xl text-lime-400 border border-emerald-700 flex items-center justify-center">
+                            <i class="fa-solid fa-language text-2xl"></i>
+                        </div>
+                        <div>
+                            <span class="text-xs font-mono text-lime-400">06</span>
+                            <h3 class="font-semibold text-white text-base">Scalable Platform</h3>
+                            <p class="text-xs text-emerald-200/80 mt-1">Build a foundation for expanding crop coverage and multi-language support.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 05: SYSTEM ARCHITECTURE -->
+        <section class="slide" id="slide-5">
+            <div class="max-w-6xl mx-auto w-full space-y-6">
+                <div class="text-center space-y-2">
+                    <span class="reveal-item delay-1 px-3 py-1 bg-emerald-800/60 text-lime-400 font-mono text-xs rounded-full border border-lime-400/30">Local-First Pipeline</span>
+                    <h2 class="reveal-item delay-2 text-3xl sm:text-4xl font-bold text-white">System Architecture</h2>
+                </div>
+
+                <div class="reveal-item delay-3 glass-panel p-6 rounded-2xl relative overflow-hidden">
+                    <div class="flex flex-col lg:flex-row items-center justify-between gap-3 relative z-10">
+                        <div class="glass-card p-4 rounded-xl border-lime-400/40 text-center w-full lg:w-40 hover:scale-105 transition">
+                            <i class="fa-solid fa-camera text-2xl text-lime-400 mb-2"></i>
+                            <div class="text-xs font-bold text-white">Camera / Gallery</div>
+                            <div class="text-[10px] text-emerald-300/70">Image Input</div>
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right text-lime-400 hidden lg:block animate-pulse"></i>
+                        <i class="fa-solid fa-arrow-down text-lime-400 lg:hidden my-1"></i>
+
+                        <div class="glass-card p-4 rounded-xl border-lime-400/40 text-center w-full lg:w-40 hover:scale-105 transition">
+                            <i class="fa-solid fa-sliders text-2xl text-lime-400 mb-2"></i>
+                            <div class="text-xs font-bold text-white">Preprocessing</div>
+                            <div class="text-[10px] text-emerald-300/70">Resize & Normalize</div>
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right text-lime-400 hidden lg:block animate-pulse"></i>
+                        <i class="fa-solid fa-arrow-down text-lime-400 lg:hidden my-1"></i>
+
+                        <div class="glass-card p-4 rounded-xl border-lime-400/40 bg-emerald-900/80 text-center w-full lg:w-44 hover:scale-105 transition shadow-lg shadow-lime-500/10">
+                            <i class="fa-solid fa-brain text-2xl text-lime-400 mb-2 animate-bounce"></i>
+                            <div class="text-xs font-bold text-white">TFLite Model</div>
+                            <div class="text-[10px] text-lime-300">On-Device Engine</div>
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right text-lime-400 hidden lg:block animate-pulse"></i>
+                        <i class="fa-solid fa-arrow-down text-lime-400 lg:hidden my-1"></i>
+
+                        <div class="glass-card p-4 rounded-xl border-lime-400/40 text-center w-full lg:w-40 hover:scale-105 transition">
+                            <i class="fa-solid fa-tags text-2xl text-lime-400 mb-2"></i>
+                            <div class="text-xs font-bold text-white">Predicted Class</div>
+                            <div class="text-[10px] text-emerald-300/70">Label Mapping</div>
+                        </div>
+
+                        <i class="fa-solid fa-arrow-right text-lime-400 hidden lg:block animate-pulse"></i>
+                        <i class="fa-solid fa-arrow-down text-lime-400 lg:hidden my-1"></i>
+
+                        <div class="glass-card p-4 rounded-xl border-lime-400/40 text-center w-full lg:w-40 hover:scale-105 transition">
+                            <i class="fa-solid fa-notes-medical text-2xl text-lime-400 mb-2"></i>
+                            <div class="text-xs font-bold text-white">Disease Info</div>
+                            <div class="text-[10px] text-emerald-300/70">Local Database</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-4 pt-2">
+                    <div class="reveal-item delay-4 p-4 glass-card rounded-xl text-xs space-y-1">
+                        <span class="font-bold text-lime-400 flex items-center gap-2"><i class="fa-solid fa-mobile-screen"></i> Mobile Interface</span>
+                        <p class="text-emerald-200/80">Native Kotlin Android UI for high performance and fast image buffer handling.</p>
+                    </div>
+                    <div class="reveal-item delay-5 p-4 glass-card rounded-xl text-xs space-y-1">
+                        <span class="font-bold text-lime-400 flex items-center gap-2"><i class="fa-solid fa-database"></i> Knowledge Base</span>
+                        <p class="text-emerald-200/80">Bundled offline JSON/Room DB containing treatments, causes, and symptoms.</p>
+                    </div>
+                    <div class="reveal-item delay-5 p-4 glass-card rounded-xl text-xs space-y-1">
+                        <span class="font-bold text-lime-400 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left"></i> Local Storage</span>
+                        <p class="text-emerald-200/80">Retains scan history, farmer profile, and past diagnosis records on device.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 06: HOW IT WORKS -->
+        <section class="slide" id="slide-6">
+            <div class="max-w-5xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <h2 class="reveal-item delay-1 text-3xl sm:text-4xl font-bold text-white">How It Works</h2>
+                    <p class="reveal-item delay-2 text-emerald-300">From a leaf photograph to an instant model prediction.</p>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+                    <div class="reveal-item delay-1 glass-panel p-5 rounded-xl border-l-4 border-l-lime-400 relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-mono text-xs text-lime-400">STEP 01</span>
+                            <i class="fa-solid fa-camera-retro text-lime-400"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base">1. Capture</h3>
+                        <p class="text-xs text-emerald-200/80 mt-1">Take a clear leaf photograph using the app camera or select an existing photo from gallery.</p>
+                    </div>
+
+                    <div class="reveal-item delay-2 glass-panel p-5 rounded-xl border-l-4 border-l-lime-400 relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-mono text-xs text-lime-400">STEP 02</span>
+                            <i class="fa-solid fa-crop-simple text-lime-400"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base">2. Preprocess</h3>
+                        <p class="text-xs text-emerald-200/80 mt-1">Resize image tensor and normalize pixels according to model specs (e.g. 224x224 RGB).</p>
+                    </div>
+
+                    <div class="reveal-item delay-3 glass-panel p-5 rounded-xl border-l-4 border-l-lime-400 relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-mono text-xs text-lime-400">STEP 03</span>
+                            <i class="fa-solid fa-bolt text-lime-400"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base">3. Infer</h3>
+                        <p class="text-xs text-emerald-200/80 mt-1">Execute inference locally using TensorFlow Lite Android Interpreter in milliseconds.</p>
+                    </div>
+
+                    <div class="reveal-item delay-4 glass-panel p-5 rounded-xl border-l-4 border-l-lime-400 relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-mono text-xs text-lime-400">STEP 04</span>
+                            <i class="fa-solid fa-list-check text-lime-400"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base">4. Classify</h3>
+                        <p class="text-xs text-emerald-200/80 mt-1">Map maximum confidence logit output index to disease labels (e.g. Tomato Early Blight).</p>
+                    </div>
+
+                    <div class="reveal-item delay-5 glass-panel p-5 rounded-xl border-l-4 border-l-lime-400 relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-mono text-xs text-lime-400">STEP 05</span>
+                            <i class="fa-solid fa-circle-info text-lime-400"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base">5. Inform</h3>
+                        <p class="text-xs text-emerald-200/80 mt-1">Render symptoms, tailored treatment plans, and preventive guidelines instantly.</p>
+                    </div>
+
+                    <div class="reveal-item delay-5 glass-panel p-5 rounded-xl border-l-4 border-l-lime-400 relative">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-mono text-xs text-lime-400">STEP 06</span>
+                            <i class="fa-solid fa-history text-lime-400"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base">6. Review</h3>
+                        <p class="text-xs text-emerald-200/80 mt-1">Save diagnosis report to device storage for historical tracking and trend monitoring.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 07: AI & MACHINE LEARNING -->
+        <section class="slide" id="slide-7">
+            <div class="max-w-5xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <h2 class="reveal-item delay-1 text-3xl sm:text-4xl font-bold text-white">AI & Machine Learning</h2>
+                    <p class="reveal-item delay-2 text-emerald-300">On-device image classification using TensorFlow Lite</p>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-6 items-center">
+                    <div class="space-y-3">
+                        <div class="reveal-item delay-1 p-4 glass-card rounded-xl border-l-2 border-l-lime-400 flex items-center justify-between">
+                            <span class="text-xs text-emerald-300 font-mono">PLATFORM</span>
+                            <span class="text-sm font-bold text-lime-400 font-mono">Android Native</span>
+                        </div>
+                        <div class="reveal-item delay-2 p-4 glass-card rounded-xl border-l-2 border-l-lime-400 flex items-center justify-between">
+                            <span class="text-xs text-emerald-300 font-mono">LANGUAGE</span>
+                            <span class="text-sm font-bold text-lime-400 font-mono">Kotlin</span>
+                        </div>
+                        <div class="reveal-item delay-3 p-4 glass-card rounded-xl border-l-2 border-l-lime-400 flex items-center justify-between">
+                            <span class="text-xs text-emerald-300 font-mono">MODEL FORMAT</span>
+                            <span class="text-sm font-bold text-lime-400 font-mono">.tflite (Quantized)</span>
+                        </div>
+                        <div class="reveal-item delay-4 p-4 glass-card rounded-xl border-l-2 border-l-lime-400 flex items-center justify-between">
+                            <span class="text-xs text-emerald-300 font-mono">INFERENCE SPEED</span>
+                            <span class="text-sm font-bold text-lime-400 font-mono">~45 ms / frame</span>
+                        </div>
+                    </div>
+
+                    <div class="reveal-item delay-4 glass-panel p-6 rounded-2xl space-y-4">
+                        <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-leaf text-lime-400"></i> Key Model Features
+                        </h3>
+                        <ul class="text-xs text-emerald-200/90 space-y-2.5">
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check-circle text-lime-400"></i>
+                                <span>Zero cloud latency — processing happens 100% on device</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check-circle text-lime-400"></i>
+                                <span>Lightweight model footprint under 15MB for fast loading</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check-circle text-lime-400"></i>
+                                <span>High accuracy across common crop pathology categories</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fa-solid fa-check-circle text-lime-400"></i>
+                                <span>Complete privacy — image data stays on farmer's device</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 08: DISEASE DETECTION & IDENTIFICATION PAGE -->
+        <section class="slide" id="slide-8">
+            <div class="max-w-6xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <span class="reveal-item delay-1 px-3 py-1 bg-lime-400/20 text-lime-400 font-mono text-xs rounded-full border border-lime-400/30">Feature Spotlight</span>
+                    <h2 class="reveal-item delay-2 text-3xl sm:text-4xl font-bold text-white">Disease Detection & Identification</h2>
+                    <p class="reveal-item delay-3 text-emerald-300">Instant visual diagnosis powered by real-time image analysis.</p>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-6 items-center">
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="reveal-item delay-1 glass-card p-5 rounded-2xl border-l-4 border-l-lime-400 space-y-2">
+                            <h3 class="font-bold text-white text-lg flex items-center gap-2">
+                                <i class="fa-solid fa-magnifying-glass text-lime-400"></i>
+                                Real-Time Leaf Recognition
+                            </h3>
+                            <p class="text-xs text-emerald-200/90 leading-relaxed">
+                                The app analyzes subtle patterns, spots, and color changes on leaf surfaces to identify specific diseases instantly.
+                            </p>
+                        </div>
+
+                        <!-- Confidence & Output Metrics Card -->
+                        <div class="reveal-item delay-2 glass-panel p-5 rounded-2xl space-y-3">
+                            <h4 class="text-xs font-mono text-lime-400 uppercase tracking-wider">Analysis Engine Output</h4>
+                            
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-white">Tomato - Early Blight</span>
+                                    <span class="text-lime-400 font-mono">92% Confidence</span>
+                                </div>
+                                <div class="w-full bg-emerald-950 rounded-full h-2.5 overflow-hidden border border-emerald-800">
+                                    <div class="bg-gradient-to-r from-emerald-400 to-lime-400 h-2.5 rounded-full" style="width: 92%"></div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 pt-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-white/70">Tomato - Late Blight</span>
+                                    <span class="text-emerald-400/70 font-mono">3.2%</span>
+                                </div>
+                                <div class="w-full bg-emerald-950 rounded-full h-2 overflow-hidden border border-emerald-800/60">
+                                    <div class="bg-emerald-500/50 h-2 rounded-full" style="width: 3.2%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="reveal-item delay-3 grid sm:grid-cols-2 gap-3">
+                            <div class="glass-card p-3 rounded-xl text-xs flex items-center gap-2.5">
+                                <i class="fa-solid fa-shield-virus text-lime-400 text-lg"></i>
+                                <span>High Sensitivity Pathogen Detection</span>
+                            </div>
+                            <div class="glass-card p-3 rounded-xl text-xs flex items-center gap-2.5">
+                                <i class="fa-solid fa-bolt text-lime-400 text-lg"></i>
+                                <span>Sub-Second Diagnostic Latency</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- App UI Screen Display -->
+                    <div class="lg:col-span-5 reveal-item delay-4 flex justify-center">
+                        <div class="phone-mockup group cursor-pointer" onclick="openImageModal('analyse.jpeg', 'Leaf Analysis & Detection UI')">
+                            <img src="https://github.com/Kasho-coru/images/blob/main/analyse.jpeg" alt="Analyse Screen" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition text-white font-medium text-xs gap-2">
+                                <i class="fa-solid fa-magnifying-glass-plus"></i> View Full Screen
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 09: TREATMENT & DISEASE MANAGEMENT -->
+        <section class="slide" id="slide-9">
+            <div class="max-w-6xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <h2 class="reveal-item delay-1 text-3xl sm:text-4xl font-bold text-white">Treatment & Disease Management</h2>
+                    <p class="reveal-item delay-2 text-emerald-300">Identification is only the first step toward crop recovery.</p>
+                </div>
+
+                <div class="grid lg:grid-cols-12 gap-6 items-center">
+                    <div class="lg:col-span-7 space-y-3">
+                        <div class="reveal-item delay-1 p-4 glass-card rounded-xl border-l-4 border-l-lime-400">
+                            <h4 class="font-bold text-white text-sm flex items-center gap-2"><i class="fa-solid fa-eye text-lime-400"></i> Symptoms</h4>
+                            <p class="text-xs text-emerald-200/80 mt-1">Detailed description of dark circular spots with concentric rings commonly appearing on older leaves.</p>
+                        </div>
+
+                        <div class="reveal-item delay-2 p-4 glass-card rounded-xl border-l-4 border-l-lime-400">
+                            <h4 class="font-bold text-white text-sm flex items-center gap-2"><i class="fa-solid fa-prescription-bottle-medical text-lime-400"></i> Treatment Guidance</h4>
+                            <p class="text-xs text-emerald-200/80 mt-1">Remove affected leaves, avoid overhead watering, improve air circulation, and apply appropriate fungicide.</p>
+                        </div>
+
+                        <div class="reveal-item delay-3 p-4 glass-card rounded-xl border-l-4 border-l-lime-400">
+                            <h4 class="font-bold text-white text-sm flex items-center gap-2"><i class="fa-solid fa-shield-halved text-lime-400"></i> Prevention & Management</h4>
+                            <p class="text-xs text-emerald-200/80 mt-1">Crop rotation practices, sanitized tool protocols, and resistant seed selection.</p>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 reveal-item delay-4 flex justify-center">
+                        <div class="phone-mockup group cursor-pointer" onclick="openImageModal('result treatment.jpeg', 'Analysis Result & Treatment Screen')">
+                            <img src="https://github.com/Kasho-coru/images/blob/main/result%20treatment.jpeg" alt="Result Treatment" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition text-white font-medium text-xs gap-2">
+                                <i class="fa-solid fa-magnifying-glass-plus"></i> View Treatment UI
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 10: OFFLINE-FIRST FUNCTIONALITY -->
+        <section class="slide" id="slide-10">
+            <div class="max-w-5xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <span class="reveal-item delay-1 px-3 py-1 bg-lime-400/20 text-lime-400 font-mono text-xs rounded-full border border-lime-400/30">Zero Network Dependency</span>
+                    <h2 class="reveal-item delay-2 text-3xl sm:text-4xl font-bold text-white">Offline-First Functionality</h2>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6 pt-2">
+                    <div class="reveal-item delay-3 glass-panel p-6 rounded-2xl text-center space-y-3">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-800/80 text-lime-400 flex items-center justify-center mx-auto text-2xl border border-emerald-700">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                        <h3 class="font-bold text-white">On-Device Model</h3>
+                        <p class="text-xs text-emerald-200/80">Model executes locally. Zero image bytes uploaded to remote cloud servers during diagnosis.</p>
+                    </div>
+
+                    <div class="reveal-item delay-4 glass-panel p-6 rounded-2xl text-center space-y-3">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-800/80 text-lime-400 flex items-center justify-center mx-auto text-2xl border border-emerald-700">
+                            <i class="fa-solid fa-book-atlas"></i>
+                        </div>
+                        <h3 class="font-bold text-white">Bundled Database</h3>
+                        <p class="text-xs text-emerald-200/80">Complete disease metadata, symptoms, and treatments pre-loaded inside application resources.</p>
+                    </div>
+
+                    <div class="reveal-item delay-5 glass-panel p-6 rounded-2xl text-center space-y-3">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-800/80 text-lime-400 flex items-center justify-center mx-auto text-2xl border border-emerald-700">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                        </div>
+                        <h3 class="font-bold text-white">Local Scan Records</h3>
+                        <p class="text-xs text-emerald-200/80">View past diagnostic results, photos, and farmer notes offline at any time.</p>
+                    </div>
+                </div>
+
+                <div class="reveal-item delay-5 glass-card p-4 rounded-xl text-center text-xs text-lime-300 border-lime-400/30">
+                    <i class="fa-solid fa-circle-check mr-1"></i> Key Advantage: Delivers uninterrupted intelligence to farmers even in remote, zero-reception agricultural zones.
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 11: USER INTERFACE & USER EXPERIENCE -->
+        <section class="slide" id="slide-11">
+            <div class="max-w-6xl mx-auto space-y-4">
+                <div class="text-center space-y-1">
+                    <h2 class="reveal-item delay-1 text-4xl font-bold text-white">User Interface Showcase</h2>
+                    <p class="reveal-item delay-2 text-md text-emerald-300">Live screenshots from the actual Android AgriVision application.</p>
+                </div>
+
+                <div class="reveal-item delay-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-2">
+                    <div class="glass-card p-2 rounded-3xl text-center group cursor-pointer transition-transform duration-300 hover:scale-105 hover:z-20 hover:shadow-3xl hover:shadow-lime-500/20" onclick="openImageModal('login page.jpeg', 'Farmer Profile & Login Screen')">
+                        <div class="h-56 rounded-2xl overflow-hidden mb-2 relative">
+                            <img src="login page.jpeg" alt="Login Page" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-[11px] font-bold text-white block">1. Farmer Profile</span>
+                    </div>
+
+                    <div class="glass-card p-2 rounded-3xl text-center group cursor-pointer transition-transform duration-300 hover:scale-105 hover:z-20 hover:shadow-3xl hover:shadow-lime-500/20" onclick="openImageModal('home.jpeg', 'Dashboard & Home Screen')">
+                        <div class="h-56 rounded-2xl overflow-hidden mb-2 relative">
+                            <img src="home.jpeg" alt="Home Page" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-[11px] font-bold text-white block">2. Main Dashboard</span>
+                    </div>
+
+                    <div class="glass-card p-2 rounded-3xl text-center group cursor-pointer transition-transform duration-300 hover:scale-105 hover:z-20 hover:shadow-3xl hover:shadow-lime-500/20" onclick="openImageModal('scan page.jpeg', 'Leaf Image Selection Screen')">
+                        <div class="h-56 rounded-2xl overflow-hidden mb-2 relative">
+                            <img src="scan page.jpeg" alt="Scan Page" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-[11px] font-bold text-white block">3. Image Selection</span>
+                    </div>
+
+                    <div class="glass-card p-2 rounded-3xl text-center group cursor-pointer transition-transform duration-300 hover:scale-105 hover:z-20 hover:shadow-3xl hover:shadow-lime-500/20" onclick="openImageModal('analyse.jpeg', 'Leaf Processing Screen')">
+                        <div class="h-56 rounded-2xl overflow-hidden mb-2 relative">
+                            <img src="analyse.jpeg" alt="Analyse Page" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-[11px] font-bold text-white block">4. Leaf Analysis</span>
+                    </div>
+
+                    <div class="glass-card p-2 rounded-3xl text-center group cursor-pointer transition-transform duration-300 hover:scale-105 hover:z-20 hover:shadow-3xl hover:shadow-lime-500/20" onclick="openImageModal('result treatment.jpeg', 'Analysis & Treatment Result')">
+                        <div class="h-56 rounded-2xl overflow-hidden mb-2 relative">
+                            <img src="result treatment.jpeg" alt="Result Treatment" class="w-full h-full object-cover">
+                        </div>
+                        <span class="text-[11px] font-bold text-white block">5. Treatment Result</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 12: DATASET & MODEL DEVELOPMENT -->
+        <section class="slide" id="slide-12">
+            <div class="max-w-5xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <h2 class="reveal-item delay-1 text-3xl sm:text-4xl font-bold text-white">Dataset & Model Development</h2>
+                    <p class="reveal-item delay-2 text-emerald-300">Model reliability begins with rigorous data quality.</p>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+                    <div class="reveal-item delay-1 glass-card p-4 rounded-xl space-y-2">
+                        <span class="text-xs font-mono text-lime-400">PHASE 1</span>
+                        <h4 class="font-bold text-white text-sm">Data Collection</h4>
+                        <p class="text-[11px] text-emerald-200/80">Gathering labeled images across target crops and disease classes.</p>
+                    </div>
+
+                    <div class="reveal-item delay-2 glass-card p-4 rounded-xl space-y-2">
+                        <span class="text-xs font-mono text-lime-400">PHASE 2</span>
+                        <h4 class="font-bold text-white text-sm">Quality Cleaning</h4>
+                        <p class="text-[11px] text-emerald-200/80">Checking label quality and removing duplicates or corrupt samples.</p>
+                    </div>
+
+                    <div class="reveal-item delay-3 glass-card p-4 rounded-xl space-y-2">
+                        <span class="text-xs font-mono text-lime-400">PHASE 3</span>
+                        <h4 class="font-bold text-white text-sm">Dataset Split</h4>
+                        <p class="text-[11px] text-emerald-200/80">Dividing images into distinct training, validation, and test subsets.</p>
+                    </div>
+
+                    <div class="reveal-item delay-4 glass-card p-4 rounded-xl space-y-2">
+                        <span class="text-xs font-mono text-lime-400">PHASE 4</span>
+                        <h4 class="font-bold text-white text-sm">TFLite Conversion</h4>
+                        <p class="text-[11px] text-emerald-200/80">Quantizing and exporting trained weights to mobile format.</p>
+                    </div>
+                </div>
+
+                <div class="reveal-item delay-5 p-4 glass-panel rounded-xl text-center text-xs text-emerald-200">
+                    <i class="fa-solid fa-shield-halved text-lime-400 mr-2"></i> Systematic evaluation and field validation across diverse growing conditions.
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 13: CURRENT IMPLEMENTATION & CHALLENGES -->
+        <section class="slide" id="slide-13">
+            <div class="max-w-5xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <h2 class="reveal-item delay-1 text-3xl sm:text-4xl font-bold text-white">Current Implementation & Challenges</h2>
+                    <p class="reveal-item delay-2 text-emerald-300">Moving from a working prototype toward reliable field deployment.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 pt-2">
+                    <div class="reveal-item delay-3 glass-panel p-5 rounded-2xl space-y-3 border-l-4 border-l-lime-400">
+                        <h3 class="font-bold text-white text-base flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-lime-400"></i> Active Engineering Priorities
+                        </h3>
+                        <ul class="text-xs text-emerald-200/90 space-y-2.5">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-check text-lime-400 mt-0.5"></i>
+                                <span>Verifying image preprocessing and tensor normalization.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-check text-lime-400 mt-0.5"></i>
+                                <span>Checking output class indices against disease label mappings.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-check text-lime-400 mt-0.5"></i>
+                                <span>Investigating prediction consistency across varying light angles.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-check text-lime-400 mt-0.5"></i>
+                                <span>Validating offline database treatments against agronomic references.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="reveal-item delay-4 glass-panel p-5 rounded-2xl space-y-3 border-l-4 border-l-amber-400">
+                        <h3 class="font-bold text-white text-base flex items-center gap-2">
+                            <i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Engineering Guardrail
+                        </h3>
+                        <p class="text-xs text-emerald-200/90 leading-relaxed">
+                            Predictions are model-generated probability estimates and should not be presented as fully authoritative medical/agronomic diagnoses until field evaluation is complete.
+                        </p>
+                        <div class="p-3 bg-amber-500/10 rounded-xl border border-amber-500/30 text-xs text-amber-300">
+                            Continuous testing on diverse mobile hardware and low-light field images is actively underway.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 14: FUTURE ENHANCEMENTS -->
+        <section class="slide" id="slide-14">
+            <div class="max-w-5xl mx-auto space-y-6">
+                <div class="text-center space-y-2">
+                    <h2 class="reveal-item delay-1 text-3xl sm:text-4xl font-bold text-white">Future Enhancements</h2>
+                    <p class="reveal-item delay-2 text-emerald-300">Building toward smarter, more dependable crop care.</p>
+                </div>
+
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+                    <div class="reveal-item delay-1 glass-card p-4 rounded-xl space-y-1.5">
+                        <i class="fa-solid fa-arrow-up-right-dots text-lime-400 text-lg"></i>
+                        <h4 class="font-bold text-white text-sm">Enhanced Accuracy</h4>
+                        <p class="text-xs text-emerald-200/80">Improve model precision using diverse real-world field imagery.</p>
+                    </div>
+
+                    <div class="reveal-item delay-2 glass-card p-4 rounded-xl space-y-1.5">
+                        <i class="fa-solid fa-seedling text-lime-400 text-lg"></i>
+                        <h4 class="font-bold text-white text-sm">Crop Expansion</h4>
+                        <p class="text-xs text-emerald-200/80">Expand support to additional staple crops and regional disease classes.</p>
+                    </div>
+
+                    <div class="reveal-item delay-3 glass-card p-4 rounded-xl space-y-1.5">
+                        <i class="fa-solid fa-language text-lime-400 text-lg"></i>
+                        <h4 class="font-bold text-white text-sm">Regional Languages</h4>
+                        <p class="text-xs text-emerald-200/80">Add vernacular language translation for localized farmer accessibility.</p>
+                    </div>
+
+                    <div class="reveal-item delay-4 glass-card p-4 rounded-xl space-y-1.5">
+                        <i class="fa-solid fa-user-doctor text-lime-400 text-lg"></i>
+                        <h4 class="font-bold text-white text-sm">Expert Consultation</h4>
+                        <p class="text-xs text-emerald-200/80">Integrate expert advisory escalation when internet connectivity becomes available.</p>
+                    </div>
+
+                    <div class="reveal-item delay-5 glass-card p-4 rounded-xl space-y-1.5">
+                        <i class="fa-solid fa-chart-line text-lime-400 text-lg"></i>
+                        <h4 class="font-bold text-white text-sm">Field Monitoring</h4>
+                        <p class="text-xs text-emerald-200/80">Geotag disease outbreaks to track early warning spread patterns across regions.</p>
+                    </div>
+
+                    <div class="reveal-item delay-5 glass-card p-4 rounded-xl space-y-1.5">
+                        <i class="fa-solid fa-sliders text-lime-400 text-lg"></i>
+                        <h4 class="font-bold text-white text-sm">Lighting Robustness</h4>
+                        <p class="text-xs text-emerald-200/80">Adapt preprocessing pipelines for extreme sun glare and shadows.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 15: CONCLUSION -->
+        <section class="slide" id="slide-15">
+            <div class="max-w-4xl mx-auto text-center space-y-6">
+                <div class="reveal-item delay-1 inline-block p-4 rounded-full bg-lime-400/20 text-lime-400 text-3xl mb-2">
+                    🌿
+                </div>
+                <h2 class="reveal-item delay-2 text-4xl sm:text-6xl font-extrabold text-white tracking-tight">
+                    Thank You
+                </h2>
+                <p class="reveal-item delay-3 text-xl text-lime-300 font-medium">
+                    Technology for healthier crops and more informed decisions.
+                </p>
+
+                <div class="reveal-item delay-4 glass-panel p-6 rounded-2xl max-w-2xl mx-auto text-emerald-100 text-sm leading-relaxed border-l-4 border-l-lime-400 text-left">
+                    AgriVision-Edge explores how on-device machine learning and locally available agricultural information can make crop disease screening accessible anywhere — even where internet connection is limited.
+                </div>
+
+                <div class="reveal-item delay-5 pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button onclick="goToSlide(1)" class="px-6 py-3 rounded-xl bg-gradient-to-r from-lime-400 to-emerald-500 text-emerald-950 font-bold text-sm shadow-lg hover:shadow-lime-500/20 transition flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-left"></i> Return to Slide 01
+                    </button>
+                </div>
+
+                <p class="reveal-item delay-5 text-xs text-emerald-400/60 font-mono pt-4">
+                    AgriVision-Edge — Smarter Farming. Earlier Detection. Healthier Crops.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER / NAVIGATION BAR -->
+    <footer class="relative z-20 px-6 py-3 glass-panel border-t border-emerald-900/60 flex flex-col md:flex-row items-center justify-between gap-3 min-h-[68px]">
+        
+        <!-- Left: Progress Bar -->
+        <div class="w-full md:w-1/4 flex flex-col gap-1 justify-center">
+            <div class="flex justify-between text-[11px] font-mono text-emerald-300">
+                <span class="tracking-wider">SLIDE PROGRESS</span>
+                <span id="slideProgressPercent" class="font-bold text-lime-400">7%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-emerald-950 overflow-hidden border border-emerald-800/80">
+                <div id="progressBar" class="h-full bg-gradient-to-r from-lime-400 to-emerald-400 transition-all duration-300" style="width: 6.66%;"></div>
+            </div>
+        </div>
+
+        <!-- Center: Controls (Centered in Footer) -->
+        <div class="flex-1 flex items-center justify-center space-x-3 w-full md:w-auto">
+            <button id="prevBtn" onclick="prevSlide()" class="px-4 py-2 rounded-xl glass-card text-emerald-200 hover:text-white hover:border-lime-400 transition flex items-center justify-center gap-2 text-xs font-semibold disabled:opacity-40 shadow-sm">
+                <i class="fa-solid fa-arrow-left"></i> <span>Previous</span>
+            </button>
+
+            <span class="text-xs font-mono text-lime-400 px-3.5 py-2 bg-emerald-950/90 rounded-xl border border-emerald-700/80 shadow-inner flex items-center justify-center">
+                <span id="currentSlideNum" class="font-bold">01</span><span class="mx-1 text-emerald-600">/</span><span>15</span>
+            </span>
+
+            <button id="nextBtn" onclick="nextSlide()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-lime-400 to-emerald-400 hover:from-lime-300 hover:to-emerald-300 text-emerald-950 font-bold transition flex items-center justify-center gap-2 text-xs shadow-lg shadow-lime-500/15">
+                <span>Next</span> <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+
+        <!-- Right: Keyboard Tip -->
+        <div class="text-xs font-mono text-emerald-400/60 hidden md:flex items-center justify-end w-1/4">
+            <span class="px-2.5 py-1 rounded-lg bg-emerald-950/50 border border-emerald-900/80 flex items-center gap-1.5">
+                <i class="fa-solid fa-keyboard text-lime-400/80"></i> Use ← Left / Right →
+            </span>
+        </div>
+    </footer>
+
+    <!-- OVERVIEW MODAL -->
+    <div id="overviewModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-6">
+        <div class="glass-panel max-w-4xl w-full max-h-[85vh] rounded-3xl p-6 flex flex-col border border-lime-400/30 space-y-4">
+            <div class="flex justify-between items-center border-b border-emerald-800 pb-3">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-border-all text-lime-400"></i> Slide Directory Overview
+                </h3>
+                <button onclick="toggleOverviewModal()" class="text-emerald-400 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 overflow-y-auto p-1" id="slideGrid">
+            </div>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX MODAL -->
+    <div id="imageModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg hidden flex flex-col items-center justify-center p-4">
+        <button onclick="closeImageModal()" class="absolute top-6 right-6 text-white bg-emerald-900/80 p-3 rounded-full hover:bg-lime-400 hover:text-emerald-950 transition">
+            <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+        <div class="max-w-md w-full max-h-[80vh] flex flex-col items-center space-y-3">
+            <img id="modalImg" src="" alt="App Preview" class="max-h-[70vh] rounded-3xl border-2 border-lime-400/50 shadow-2xl">
+            <span id="modalCaption" class="text-sm font-semibold text-lime-300 font-mono text-center"></span>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_SLIDES = 15;
+        let currentSlide = 1;
+
+        const slideTitles = [
+            "Title & Introduction",
+            "The Problem",
+            "Our Proposed Solution",
+            "Project Objectives",
+            "System Architecture",
+            "How It Works",
+            "AI & Machine Learning",
+            "Disease Detection UI",
+            "Treatment & Management",
+            "Offline-First Functionality",
+            "User Interface Showcase",
+            "Dataset & Model Dev",
+            "Current Implementation",
+            "Future Enhancements",
+            "Conclusion & Thank You"
+        ];
+
+        lucide.createIcons();
+
+        function updateSlideUI() {
+            document.querySelectorAll('.slide').forEach((slide, idx) => {
+                if (idx + 1 === currentSlide) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+
+            const numStr = currentSlide < 10 ? `0${currentSlide}` : `${currentSlide}`;
+            document.getElementById('slideIndexText').innerText = numStr;
+            document.getElementById('currentSlideNum').innerText = numStr;
+
+            const percent = Math.round((currentSlide / TOTAL_SLIDES) * 100);
+            document.getElementById('progressBar').style.width = `${percent}%`;
+            document.getElementById('slideProgressPercent').innerText = `${percent}%`;
+
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === TOTAL_SLIDES;
+        }
+
+        function nextSlide() {
+            if (currentSlide < TOTAL_SLIDES) {
+                currentSlide++;
+                updateSlideUI();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlideUI();
+            }
+        }
+
+        function goToSlide(slideNum) {
+            if (slideNum >= 1 && slideNum <= TOTAL_SLIDES) {
+                currentSlide = slideNum;
+                updateSlideUI();
+                closeOverviewModal();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'Escape') {
+                closeOverviewModal();
+                closeImageModal();
+            }
+        });
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function toggleOverviewModal() {
+            const modal = document.getElementById('overviewModal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                renderOverviewGrid();
+            }
+        }
+
+        function closeOverviewModal() {
+            document.getElementById('overviewModal').classList.add('hidden');
+        }
+
+        function renderOverviewGrid() {
+            const grid = document.getElementById('slideGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 1; i <= TOTAL_SLIDES; i++) {
+                const isActive = i === currentSlide;
+                const card = document.createElement('div');
+                card.className = `p-3 rounded-xl glass-card cursor-pointer transition border text-left flex flex-col justify-between ${
+                    isActive ? 'border-lime-400 bg-emerald-900/90' : 'border-emerald-800/50 hover:border-lime-400/50'
+                }`;
+                card.onclick = () => goToSlide(i);
+                
+                const num = i < 10 ? `0${i}` : `${i}`;
+                card.innerHTML = `
+                    <div class="flex items-center justify-between text-xs font-mono mb-2">
+                        <span class="${isActive ? 'text-lime-400 font-bold' : 'text-emerald-400'}">${num}</span>
+                        ${isActive ? '<i class="fa-solid fa-circle text-[8px] text-lime-400"></i>' : ''}
+                    </div>
+                    <div class="text-[11px] font-semibold text-white line-clamp-2">${slideTitles[i-1]}</div>
+                `;
+                grid.appendChild(card);
+            }
+        }
+
+        function openImageModal(imgSrc, caption) {
+            document.getElementById('modalImg').src = imgSrc;
+            document.getElementById('modalCaption').innerText = caption;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        window.onload = function() {
+            updateSlideUI();
+        }
+    </script>
+</body>
+</html>
